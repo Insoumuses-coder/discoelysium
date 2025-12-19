@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { soundService } from '../services/soundService';
 
 interface SkillCheckProps {
   skill: string;
@@ -12,14 +13,25 @@ const SkillCheck: React.FC<SkillCheckProps> = ({ skill, difficulty, onComplete }
   const [result, setResult] = useState<{ d1: number, d2: number, total: number } | null>(null);
 
   const roll = () => {
+    soundService.playTypewriter();
     setRolling(true);
+    // Simulate dice rolling sound loop
+    const interval = setInterval(() => soundService.playTypewriter(), 150);
+    
     setTimeout(() => {
+      clearInterval(interval);
       const d1 = Math.floor(Math.random() * 6) + 1;
       const d2 = Math.floor(Math.random() * 6) + 1;
       const total = d1 + d2;
       setResult({ d1, d2, total });
       setRolling(false);
       onComplete(total >= difficulty);
+      
+      if (total >= difficulty) {
+        soundService.playNeonBuzz();
+      } else {
+        soundService.playPaperTear();
+      }
     }, 1500);
   };
 
@@ -31,6 +43,7 @@ const SkillCheck: React.FC<SkillCheckProps> = ({ skill, difficulty, onComplete }
       {!result && !rolling && (
         <button 
           onClick={roll}
+          onMouseEnter={() => soundService.playTypewriter()}
           className="bg-[#8a3324] hover:bg-[#a33c2a] text-[#e3dccb] px-8 py-2 font-bold uppercase transition-colors"
         >
           [ Roll 2D6 ]
@@ -54,7 +67,10 @@ const SkillCheck: React.FC<SkillCheckProps> = ({ skill, difficulty, onComplete }
             {result.total >= difficulty ? 'Success' : 'Failure'}
           </p>
           <button 
-            onClick={() => setResult(null)}
+            onClick={() => {
+              soundService.playTypewriter();
+              setResult(null);
+            }}
             className="mt-4 text-xs underline opacity-50 hover:opacity-100"
           >
             Reset

@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { geminiService } from '../services/geminiService';
 import { SYSTEM_PROMPTS } from '../constants';
 import { DialoguePart, Locale } from '../types';
+import { soundService } from '../services/soundService';
 
 interface ThoughtCabinetProps {
   locale: Locale;
@@ -34,6 +35,7 @@ const ThoughtCabinet: React.FC<ThoughtCabinetProps> = ({ locale }) => {
     e.preventDefault();
     if (!input.trim() || loading) return;
 
+    soundService.playTypewriter();
     const userMessage: DialoguePart = { speaker: locale === 'zh' ? '侦探' : 'Detective', text: input, type: 'user' };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
@@ -53,6 +55,7 @@ const ThoughtCabinet: React.FC<ThoughtCabinetProps> = ({ locale }) => {
       skillName: skillName
     }]);
     setLoading(false);
+    soundService.playNeonBuzz();
   };
 
   return (
@@ -96,12 +99,14 @@ const ThoughtCabinet: React.FC<ThoughtCabinetProps> = ({ locale }) => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={() => soundService.playTypewriter()}
           placeholder={locale === 'zh' ? "输入你的想法..." : "Input a thought..."}
           className="w-full bg-transparent border-b border-[#4a4a4a] focus:border-[#ccff00] transition-colors outline-none py-4 px-2 text-[#e3dccb] placeholder-gray-600 font-serif italic text-lg"
           disabled={loading}
         />
         <button 
           type="submit"
+          onMouseEnter={() => soundService.playTypewriter()}
           className="absolute right-0 bottom-4 text-[#ccff00] hover:scale-125 transition-transform disabled:opacity-50"
           disabled={loading}
         >
