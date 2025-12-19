@@ -6,6 +6,8 @@ export enum SkillType {
   MOTORICS = 'Motorics'
 }
 
+export type Locale = 'en' | 'zh';
+
 export interface Skill {
   name: string;
   type: SkillType;
@@ -25,4 +27,17 @@ export interface Suspect {
   description: string;
   background: string;
   image: string;
+}
+
+export interface TranslationSet {
+  subtitle: string;
+  caseFileHeader: string;
+  caseFileContent: string;
+  thoughtCabinetTitle: string;
+  skillsTitle: string;
+  buySteam: string;
+  buyGog: string;
+  footerText: string;
+  themeNocturnal: string;
+  themeDiurnal: string;
 }
